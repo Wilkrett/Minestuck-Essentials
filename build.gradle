@@ -9,6 +9,9 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 base {
@@ -56,6 +59,9 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    implementation "com.mraof:Minestuck-1.21.1:${minestuck_version}"
+    runtimeOnly "software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}"
+    runtimeOnly "net.commoble:infiniverse-1.21:${infiniverse_version}"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -69,7 +75,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
                              mod_license            : mod_license,
                              mod_version            : mod_version,
                              mod_authors            : mod_authors,
-                             mod_description        : mod_description]
+                             mod_description        : mod_description,
+                             minestuck_version_range: minestuck_version_range]
     inputs.properties replaceProperties
     expand replaceProperties
     from "src/main/templates"

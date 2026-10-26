@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:item/structure_block",
+  "overrides": [
+    {
+      "predicate": {
+        "minestuck_essentials:display": 0.5
+      },
+      "model": "minestuck_essentials:item/itemized_multiblock_preview"
+    },
+    {
+      "predicate": {
+        "minestuck_essentials:display": 1
+      },
+      "model": "minestuck_essentials:item/itemized_multiblock_icon"
+    }
+  ]
+}

@@ -1,2 +1,22 @@
 {
+  "item.minestuck_essentials.itemized_multiblock": "Itemized Multiblock",
+  "item.minestuck_essentials.itemized_multiblock.tooltip": "Multiblock: %s",
+  "item.minestuck_essentials.itemized_multiblock.missing": "The multiblock %s doesn't exist anymore",
+  "item.minestuck_essentials.itemized_multiblock.no_room": "Not enough room to place the multiblock here",
+  "item.minestuck_essentials.itemizer": "Itemizer",
+  "item.minestuck_essentials.itemizer.start": "Start set to %s",
+  "item.minestuck_essentials.itemizer.end": "End set to %s (%s)",
+  "item.minestuck_essentials.itemizer.cleared": "Selection cleared",
+  "item.minestuck_essentials.itemizer.tooltip.start": "Start: %s",
+  "item.minestuck_essentials.itemizer.tooltip.end": "End: %s (%s)",
+  "item.minestuck_essentials.itemizer.tooltip.usage": "Right-click a start and an end block to register them to the deploy list, sneak to clear",
+  "commands.minestuck_essentials.deploy_list.register.item": "Added %s to the deploy list for %s (%s)",
+  "commands.minestuck_essentials.deploy_list.register.item.free": "Added %s to the deploy list for free since it has no grist cost (%s)",
+  "commands.minestuck_essentials.deploy_list.register.multiblock": "Itemized %s blocks as %s and added it to the deploy list for %s (%s)",
+  "commands.minestuck_essentials.deploy_list.register.multiblock.free_blocks": "%s of those blocks have no grist cost and were left out of the price",
+  "commands.minestuck_essentials.deploy_list.register.no_item": "The block at that position has no item",
+  "commands.minestuck_essentials.deploy_list.register.already_registered": "%s is already on the deploy list (%s)",
+  "commands.minestuck_essentials.deploy_list.register.empty": "There are no blocks in that area",
+  "commands.minestuck_essentials.deploy_list.register.too_big": "That area is too big, the max is %s blocks per side",
+  "commands.minestuck_essentials.deploy_list.register.failed": "Couldn't write the deploy list files: %s"
 }

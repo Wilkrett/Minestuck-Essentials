@@ -5,12 +5,19 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
+import org.wilkretawesomesauce.minestuck_essentials.item.MSEItemComponents;
+import org.wilkretawesomesauce.minestuck_essentials.item.MSEItems;
 
 @Mod(Minestuck_essentials.MODID)
-public class Minestuck_essentials {
-    public static final String MODID = "minestuck_essentials";
-    public static final Logger LOGGER = LogUtils.getLogger();
+public class Minestuck_essentials
+{
+	public static final String MODID = "minestuck_essentials";
+	public static final Logger LOGGER = LogUtils.getLogger();
 
-    public Minestuck_essentials(IEventBus modEventBus, ModContainer modContainer) {
-    }
+	public Minestuck_essentials(IEventBus modEventBus, ModContainer modContainer)
+	{
+		MSEItemComponents.REGISTRY.register(modEventBus);
+		MSEItems.REGISTRY.register(modEventBus);
+		modEventBus.addListener(MSEItems::addToCreativeTabs);
+	}
 }

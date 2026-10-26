@@ -4,6 +4,7 @@
   "package": "org.wilkretawesomesauce.minestuck_essentials.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ServerEditHandlerMixin"
   ],
   "client": [
   ],

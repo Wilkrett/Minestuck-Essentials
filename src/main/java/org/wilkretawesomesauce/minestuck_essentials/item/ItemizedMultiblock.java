@@ -33,7 +33,7 @@ public record ItemizedMultiblock(ResourceLocation structure, Optional<Component>
 			Vec3i.CODEC.optionalFieldOf("size").forGetter(ItemizedMultiblock::size),
 			ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(ItemizedMultiblock::icon)
 	).apply(instance, ItemizedMultiblock::new));
-	
+
 	public static final StreamCodec<RegistryFriendlyByteBuf, ItemizedMultiblock> STREAM_CODEC = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC, ItemizedMultiblock::structure,
 			ComponentSerialization.OPTIONAL_STREAM_CODEC, ItemizedMultiblock::name,

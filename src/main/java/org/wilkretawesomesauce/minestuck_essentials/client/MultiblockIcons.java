@@ -32,16 +32,21 @@ public final class MultiblockIcons
 	public static Optional<Icon> get(ItemStack stack)
 	{
 		ItemizedMultiblock itemized = stack.get(MSEItemComponents.ITEMIZED_MULTIBLOCK.get());
-		return itemized == null ? Optional.empty() : itemized.icon().flatMap(icon -> ICONS.computeIfAbsent(icon, MultiblockIcons::load));
+		if(itemized == null)
+			return Optional.empty();
+		if(itemized.icon().isPresent())
+			return ICONS.computeIfAbsent(itemized.icon().get(), icon -> load(icon, true));
+		return ICONS.computeIfAbsent(itemized.structure().withPrefix("multiblock/"), icon -> load(icon, false));
 	}
 
-	private static Optional<Icon> load(ResourceLocation icon)
+	private static Optional<Icon> load(ResourceLocation icon, boolean warnIfMissing)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		Optional<Resource> resource = mc.getResourceManager().getResource(icon.withPath(path -> "textures/" + path + ".png"));
 		if(resource.isEmpty())
 		{
-			Minestuck_essentials.LOGGER.warn("Itemized multiblock icon {} doesn't exist", icon);
+			if(warnIfMissing)
+				Minestuck_essentials.LOGGER.warn("Itemized multiblock icon {} doesn't exist", icon);
 			return Optional.empty();
 		}
 

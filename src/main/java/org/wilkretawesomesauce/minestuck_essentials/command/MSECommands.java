@@ -19,6 +19,6 @@ public final class MSECommands
 	public static void onRegisterCommands(RegisterCommandsEvent event)
 	{
 		event.getDispatcher().register(Commands.literal(ROOT)
-				.then(DeployListCommand.getArgumentBuilder()));
+				.then(DeployListCommand.getArgumentBuilder(event.getBuildContext())));
 	}
 }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -22,9 +23,11 @@ import com.mraof.minestuck.command.argument.GristSetArgument;
 import com.mraof.minestuck.computer.editmode.DeployList;
 import com.mraof.minestuck.computer.editmode.DeployListLoader;
 import net.minecraft.SharedConstants;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.core.BlockPos;
@@ -84,14 +87,25 @@ public final class DeployListCommand
 	{
 	}
 
-	public static LiteralArgumentBuilder<CommandSourceStack> getArgumentBuilder()
+	public static LiteralArgumentBuilder<CommandSourceStack> getArgumentBuilder(CommandBuildContext buildContext)
 	{
 		return Commands.literal(LITERAL)
 				.requires(source -> source.hasPermission(2))
-				.then(Commands.literal(REGISTER)
-						.then(positionArguments(context -> ""))
-						.then(Commands.argument("name", StringArgumentType.string())
-								.then(positionArguments(context -> StringArgumentType.getString(context, "name")))));
+				.then(targetArguments(Commands.literal(REGISTER), buildContext, context -> "")
+						.then(targetArguments(Commands.argument("name", StringArgumentType.string()), buildContext, context -> StringArgumentType.getString(context, "name"))));
+	}
+
+	private static <T extends ArgumentBuilder<CommandSourceStack, T>> T targetArguments(T builder, CommandBuildContext buildContext, Function<CommandContext<CommandSourceStack>, String> name)
+	{
+		return builder.then(positionArguments(name))
+				.then(Commands.literal("hand")
+						.executes(context -> registerHand(context, name.apply(context), null))
+						.then(gristCostArgument(DeployListCommand::defaultHandCost)
+								.executes(context -> registerHand(context, name.apply(context), getGristCost(context)))))
+				.then(Commands.argument("item", ItemArgument.item(buildContext))
+						.executes(context -> registerItem(context, name.apply(context), null))
+						.then(gristCostArgument(DeployListCommand::defaultItemCost)
+								.executes(context -> registerItem(context, name.apply(context), getGristCost(context)))));
 	}
 
 	private static RequiredArgumentBuilder<CommandSourceStack, Coordinates> positionArguments(Function<CommandContext<CommandSourceStack>, String> name)
@@ -115,14 +129,30 @@ public final class DeployListCommand
 	private static int registerBlock(CommandContext<CommandSourceStack> context, String name, @Nullable GristSet gristCost) throws CommandSyntaxException
 	{
 		CommandSourceStack source = context.getSource();
-		ServerLevel level = source.getLevel();
-		ItemStack stack = itemFor(level, BlockPosArgument.getLoadedBlockPos(context, "pos"), source.getPlayer());
+		ItemStack stack = itemFor(source.getLevel(), BlockPosArgument.getLoadedBlockPos(context, "pos"), source.getPlayer());
+		return registerStack(source, stack, LANG + ".no_item", name, gristCost);
+	}
+
+	private static int registerHand(CommandContext<CommandSourceStack> context, String name, @Nullable GristSet gristCost) throws CommandSyntaxException
+	{
+		return registerStack(context.getSource(), heldItem(context), LANG + ".empty_hand", name, gristCost);
+	}
+
+	private static int registerItem(CommandContext<CommandSourceStack> context, String name, @Nullable GristSet gristCost) throws CommandSyntaxException
+	{
+		ItemStack stack = ItemArgument.getItem(context, "item").createItemStack(1, false);
+		return registerStack(context.getSource(), stack, LANG + ".air", name, gristCost);
+	}
+
+	private static int registerStack(CommandSourceStack source, ItemStack stack, String emptyMessage, String name, @Nullable GristSet gristCost)
+	{
 		if(stack.isEmpty())
 		{
-			source.sendFailure(Component.translatable(LANG + ".no_item"));
+			source.sendFailure(Component.translatable(emptyMessage));
 			return 0;
 		}
 
+		ServerLevel level = source.getLevel();
 		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 		String fileName = fileName(name).orElse(itemId.getNamespace() + "_" + itemId.getPath().replace('/', '_'));
 		try
@@ -222,6 +252,11 @@ public final class DeployListCommand
 		return BoundingBox.fromCorners(BlockPosArgument.getLoadedBlockPos(context, "pos"), BlockPosArgument.getLoadedBlockPos(context, "to"));
 	}
 
+	private static ItemStack heldItem(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		return context.getSource().getPlayerOrException().getMainHandItem().copyWithCount(1);
+	}
+
 	private static ItemStack itemFor(ServerLevel level, BlockPos pos, @Nullable Player player)
 	{
 		ItemStack clone = level.getBlockState(pos).getCloneItemStack(new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false), level, pos, player);
@@ -280,6 +315,18 @@ public final class DeployListCommand
 	{
 		ServerLevel level = context.getSource().getLevel();
 		return itemCost(level, itemFor(level, BlockPosArgument.getLoadedBlockPos(context, "pos"), context.getSource().getPlayer()).getItem());
+	}
+
+	@Nullable
+	private static GristSet defaultHandCost(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		return itemCost(context.getSource().getLevel(), heldItem(context).getItem());
+	}
+
+	@Nullable
+	private static GristSet defaultItemCost(CommandContext<CommandSourceStack> context)
+	{
+		return itemCost(context.getSource().getLevel(), ItemArgument.getItem(context, "item").getItem());
 	}
 
 	@Nullable

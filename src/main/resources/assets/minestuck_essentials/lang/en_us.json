@@ -15,8 +15,14 @@
   "commands.minestuck_essentials.deploy_list.register.multiblock": "Itemized %s blocks as %s and added it to the deploy list for %s (%s)",
   "commands.minestuck_essentials.deploy_list.register.multiblock.free_blocks": "%s of those blocks have no grist cost and were left out of the price",
   "commands.minestuck_essentials.deploy_list.register.no_item": "The block at that position has no item",
+  "commands.minestuck_essentials.deploy_list.register.empty_hand": "You're not holding anything",
+  "commands.minestuck_essentials.deploy_list.register.air": "You cant register air dude.",
   "commands.minestuck_essentials.deploy_list.register.already_registered": "%s is already on the deploy list (%s)",
   "commands.minestuck_essentials.deploy_list.register.empty": "There are no blocks in that area",
   "commands.minestuck_essentials.deploy_list.register.too_big": "That area is too big, the max is %s blocks per side",
-  "commands.minestuck_essentials.deploy_list.register.failed": "Couldn't write the deploy list files: %s"
+  "commands.minestuck_essentials.deploy_list.register.failed": "Couldn't write the deploy list files: %s",
+  "commands.minestuck_essentials.resourcepack.enabled": "Made the multiblock icon pack and turned it on",
+  "commands.minestuck_essentials.resourcepack.ready": "The multiblock icon pack is on",
+  "commands.minestuck_essentials.resourcepack.folder": "Put a PNG named after each multiblock in %s and press F3+T:",
+  "commands.minestuck_essentials.resourcepack.failed": "Couldn't make the multiblock icon pack: %s"
 }

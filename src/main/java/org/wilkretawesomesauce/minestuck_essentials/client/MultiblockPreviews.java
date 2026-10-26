@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public final class MultiblockPreviews
 {
@@ -29,6 +30,11 @@ public final class MultiblockPreviews
 
 	private MultiblockPreviews()
 	{
+	}
+
+	public static Set<ResourceLocation> structures()
+	{
+		return previews.keySet();
 	}
 
 	public static void set(Map<ResourceLocation, MultiblockPreview> newPreviews)

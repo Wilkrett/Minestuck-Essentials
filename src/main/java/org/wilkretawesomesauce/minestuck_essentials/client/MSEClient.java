@@ -1,6 +1,7 @@
 package org.wilkretawesomesauce.minestuck_essentials.client;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.commands.Commands;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -8,10 +9,12 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.wilkretawesomesauce.minestuck_essentials.Minestuck_essentials;
+import org.wilkretawesomesauce.minestuck_essentials.command.MSECommands;
 import org.wilkretawesomesauce.minestuck_essentials.item.MSEItems;
 
 @EventBusSubscriber(modid = Minestuck_essentials.MODID, value = Dist.CLIENT)
@@ -45,6 +48,12 @@ public final class MSEClient
 				return renderer;
 			}
 		}, MSEItems.ITEMIZED_MULTIBLOCK.get());
+	}
+
+	@SubscribeEvent
+	public static void onRegisterClientCommands(RegisterClientCommandsEvent event)
+	{
+		event.getDispatcher().register(Commands.literal(MSECommands.ROOT).then(IconPackCommand.getArgumentBuilder()));
 	}
 
 	@SubscribeEvent
